@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic multi-intent detection</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h2>Dynamic multi-intent detection</h2>
+
+    <label>List of intents (comma-separated)</label>
+    <textarea id="intents" placeholder="e.g., greeting, farewell, query_schedule"></textarea>
+
+    <label>User input:</label>
+    <input type="text" id="userInput" placeholder="Type your phrase here...">
+
+    <button onclick="detectIntent()">Detect intent</button>
+
+    <h3>Output:</h3>
+    <pre id="output">{}</pre>
+
+    <script>
+        async function detectIntent() {
+            const intents = document.getElementById("intents").value.split(",").map(i => i.trim());
+            const input = document.getElementById("userInput").value;
+
+            if (!input) {
+                alert("Please insert text");
+                return;
+            }
+
+            const ngrokUrl = "https://python-quality-fully.ngrok-free.app";
+
+            const response = await fetch(`${ngrokUrl}/detect-intent`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ intents, input })
+            });
+
+            const result = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(result, null, 2);
+        }
+    </script>
+
+</body>
+</html>
